@@ -1,0 +1,31 @@
+// Wikimedia UI colors: https://design.wikimedia.org/style-guide/visual-style_colors.html
+$theme-colors: (
+        "primary": #36c,
+        "secondary": #a2a9b1,
+        "success": #00af89,
+        "warning": #fc3,
+        "danger": #d33,
+        "info": #eaf3ff,
+        "light": #eaecf0,
+        "dark": #54595d
+);
+$enable-rounded: false;
+
+// Required
+@import "../../../node_modules/bootstrap/scss/functions";
+@import "../../../node_modules/bootstrap/scss/variables";
+@import "../../../node_modules/bootstrap/scss/mixins";
+
+// Optional
+@import "../../../node_modules/bootstrap/scss/reboot";
+@import "../../../node_modules/bootstrap/scss/type";
+@import "../../../node_modules/bootstrap/scss/images";
+@import "../../../node_modules/bootstrap/scss/code";
+@import "../../../node_modules/bootstrap/scss/grid";
+
+@import '~bootstrap/scss/bootstrap.scss';
+@import '~bootstrap-vue/src/index.scss';
+
+.btn {
+  border-radius: 2px;
+}
