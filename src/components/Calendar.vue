@@ -3,14 +3,16 @@
 </template>
 
 <script lang="ts">
+import Vue from "vue";
 import FullCalendar from "@fullcalendar/vue";
 import bootstrapPlugin from "@fullcalendar/bootstrap";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
 import timeGridPlugin from "@fullcalendar/timegrid";
+import { EventData } from "@/types";
 
-export default {
+export default Vue.extend({
 	components: {
 		FullCalendar
 	},
@@ -43,11 +45,16 @@ export default {
 				},
 				eventClick: (info: any) => {
 					info.jsEvent.preventDefault();
-					console.log(info);
-					this.$emit("event-click", info);
+					const eventData: EventData = {
+						title: String(info.event.title),
+						url: String(info.event.url),
+						desc: String(info.event.extendedProps.desc || ""),
+						callUrl: String(info.event.extendedProps.callUrl || "")
+					};
+					this.$emit("event-click", eventData);
 				}
 			}
 		};
 	}
-};
+});
 </script>

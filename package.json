@@ -16,7 +16,6 @@
     "@fullcalendar/list": "^5.3.1",
     "@fullcalendar/timegrid": "^5.3.1",
     "@fullcalendar/vue": "^5.3.1",
-    "@wikimedia/wvui": "0.0.1",
     "bootstrap": "^4.5.3",
     "bootstrap-vue": "^2.18.0",
     "core-js": "^3.6.5",

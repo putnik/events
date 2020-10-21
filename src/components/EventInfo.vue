@@ -13,12 +13,14 @@
 </template>
 
 <script lang="ts">
-export default {
+import Vue from "vue";
+
+export default Vue.extend({
 	props: {
 		title: { default: "" },
 		url: { default: "" },
 		callUrl: { default: "" },
 		desc: { default: "" }
 	}
-};
+});
 </script>

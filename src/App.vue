@@ -23,22 +23,21 @@
 </template>
 
 <script lang="ts">
-import components from "@wikimedia/wvui";
-import "@wikimedia/wvui/dist/wvui.css";
+import Vue from "vue";
 import "@fortawesome/fontawesome-free/css/all.css";
 import Calendar from "./components/Calendar.vue";
 import EventInfo from "./components/EventInfo.vue";
 import Navbar from "./components/Navbar.vue";
 import Sidebar from "./components/Sidebar.vue";
+import { EventData } from "@/types";
 
-export default {
+const App = Vue.extend({
 	name: "App",
 	components: {
 		Calendar,
 		EventInfo,
 		Navbar,
-		Sidebar,
-		...components
+		Sidebar
 	},
 	data: () => ({
 		event: {
@@ -49,15 +48,11 @@ export default {
 		}
 	}),
 	methods: {
-		eventClick: function(info: any) {
-			console.log("You clicked the button!", info);
-			this.event = {
-				title: info.event.title || "",
-				url: info.event.url || "",
-				callUrl: info.event.extendedProps.callUrl || "",
-				desc: info.event.extendedProps.desc || ""
-			};
+		eventClick: function(eventData: EventData) {
+			this.event = eventData;
 		}
 	}
-};
+});
+
+export default App;
 </script>
