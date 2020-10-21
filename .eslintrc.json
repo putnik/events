@@ -20,7 +20,7 @@
 		// Extends: all **client** JavaScript, TypeScript, and Vue files (_excluding_ TypeScript
 		// tests).
 		{
-			"files": ["src/**/*.[jt]s", "src/**/*.vue"],
+			"files": ["src/js/**/*.[jt]s", "src/js/**/*.vue"],
 			"excludedFiles": ["*.test.ts"],
 			"parserOptions": {
 				"sourceType": "module"

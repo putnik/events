@@ -20,7 +20,7 @@ export default Vue.extend({
 		return {
 			calendarOptions: {
 				locale: "ru",
-				events: "events.json",
+				events: "/api/events",
 				themeSystem: "bootstrap",
 				plugins: [
 					bootstrapPlugin,
