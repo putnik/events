@@ -22,20 +22,27 @@ class EventController extends Controller
         $start = new Carbon($request->input('start'));
         $end = new Carbon($request->input('end'));
 
-        $content = file_get_contents(__DIR__ . '../../../../../../public/events.json');
-        $events = json_decode($content, true);
-        $filteredEvents = [];
-        foreach ($events as $event) {
-			$eventStart = new Carbon($event['start']);
-			$eventEnd = new Carbon($event['end']);
-        	if (
-        		($start <= $eventStart && $eventStart <= $end) ||
-				($start <= $eventEnd && $eventEnd <= $end)
-			) {
-				$filteredEvents[] = $event;
+        $dir = __DIR__ . '/../../../../../data';
+		$files = scandir($dir);
+		$events = [];
+		foreach ($files as $file) {
+			if (!preg_match('/\.json$/', $file)) {
+				continue;
+			}
+			$content = file_get_contents($dir . '/' . $file);
+			$fileEvents = json_decode($content, true);
+			foreach ($fileEvents as $event) {
+				$eventStart = new Carbon($event['start']);
+				$eventEnd = new Carbon($event['end']);
+				if (
+					($start <= $eventStart && $eventStart <= $end) ||
+					($start <= $eventEnd && $eventEnd <= $end)
+				) {
+					$events[] = $event;
+				}
 			}
 		}
 
-        return json_encode($filteredEvents);
+        return json_encode($events);
     }
 }
