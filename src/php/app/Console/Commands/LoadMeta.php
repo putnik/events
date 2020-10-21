@@ -46,16 +46,24 @@ final class LoadMeta extends Command
 		$metaEvents = json_decode($content, true);
 		$events = [];
 		foreach ($metaEvents as $metaEvent) {
+			$url = str_replace(
+				' ',
+				'_',
+				$metaEvent['link']
+			);
 			$url = preg_replace(
 				'/^:?d:/',
 				'https://www.wikidata.org/wiki/',
-				$metaEvent['link']
+				$url
 			);
 			$url = preg_replace(
 				'/^:([a-z\-]+):/',
 				'https://\1.wikipedia.org/wiki/',
 				$url
 			);
+			if (strpos($url, '://') === false) {
+				$url = 'https://meta.wikimedia.org/wiki' . $url;
+			}
 			$event = new Event([
 				'start' => new Carbon($metaEvent['dtstart']),
 				'end' => new Carbon($metaEvent['dtend']),
