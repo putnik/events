@@ -7,7 +7,9 @@
     "require": {
         "php": "^7.3",
         "johngrogg/ics-parser": "^2.2",
-        "laravel/lumen-framework": "^8.0"
+        "laravel/lumen-framework": "^8.0",
+        "masterminds/html5": "^2.7",
+        "mf2/mf2": "^0.4.6"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.9.1",
