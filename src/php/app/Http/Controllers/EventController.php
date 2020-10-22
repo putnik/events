@@ -31,6 +31,9 @@ class EventController extends Controller
 			}
 			$content = file_get_contents($dir . '/' . $file);
 			$fileEvents = json_decode($content, true);
+			if (json_last_error()) {
+				continue;
+			}
 			foreach ($fileEvents as $event) {
 				$eventStart = new Carbon($event['start']);
 				$eventEnd = new Carbon($event['end']);

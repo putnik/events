@@ -6,7 +6,6 @@ use App\Models\Event;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use function Mf2\fetch as mfFetch;
-use function Sodium\add;
 
 final class LoadHCalendar extends Command
 {
@@ -36,14 +35,22 @@ final class LoadHCalendar extends Command
 		parent::__construct();
 	}
 
-	private function parseHEvent(array $data): Event
+	private function parseHEvent(array $mf): ?Event
 	{
+		if (!isset($mf['type'][0]) || $mf['type'][0] !== 'h-event') {
+			return null;
+		}
+		$data = $mf['properties'];
+		if (!isset($data['start'][0], $data['name'][0])) {
+			return null;
+		}
+
 		[$title, $url] = $this->parseHCard($data['name'][0]);
 		return new Event([
 			'start' => new Carbon($data['start'][0]),
 			'end' => isset($data['end'][0])
 				? new Carbon($data['end'][0])
-				: (new Carbon($data['start'][0]))->addHour(),
+				: new Carbon($data['start'][0]),
 			'title' => $title,
 			'desc' => '',
 			'url' => $url,
@@ -61,8 +68,8 @@ final class LoadHCalendar extends Command
 			];
 		}
 		return [
-			$data['properties']['name'][0],
-			$data['properties']['url'][0]
+			mb_convert_encoding($data['properties']['name'][0], 'UTF-8', 'UTF-8'),
+			mb_convert_encoding($data['properties']['url'][0] ?? '', 'UTF-8', 'UTF-8')
 		];
 	}
 
@@ -77,12 +84,13 @@ final class LoadHCalendar extends Command
 		$data = mfFetch($url);
 		$events = [];
 		foreach ($data['items'] as $mf) {
-			if ($mf['type'][0] === 'h-event') {
-				$events[] = $this->parseHEvent($mf['properties']);
+			$event = $this->parseHEvent($mf);
+			if ($event !== null) {
+				$events[] = $event;
 			}
 		}
 		$filename = self::DATA_DIR . '/' . md5($url) . '.json';
-		$json = json_encode($events);
+		$json = json_encode($events, JSON_UNESCAPED_UNICODE);
 		file_put_contents($filename, $json);
 	}
 }

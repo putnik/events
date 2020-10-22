@@ -29,7 +29,7 @@ class Kernel extends ConsoleKernel
     {
 		$schedule->command(LoadMeta::class)->daily();
 		$schedule->command(LoadHCalendar::class, [
-			'https://en.wikipedia.org/wiki/Template:Meetup',
+			'https://en.wikipedia.org/wiki/Wikipedia:Meetup/Calendar',
 		])->daily();
     }
 }

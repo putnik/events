@@ -5,11 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 class Event extends Model {
-	/**
-	 * The attributes that are mass assignable.
-	 *
-	 * @var array
-	 */
 	protected $fillable = [
 		'start',
 		'end',
@@ -19,12 +14,12 @@ class Event extends Model {
 		'callUrl',
 	];
 
-	/**
-	 * The attributes excluded from the model's JSON form.
-	 *
-	 * @var array
-	 */
-	protected $hidden = [
-		'password',
+	protected $casts = [
+		'start' => 'datetime',
+		'end' => 'datetime',
+		'title' => 'string',
+		'desc' => 'string',
+		'url' => 'string',
+		'callUrl' => 'string',
 	];
 }
