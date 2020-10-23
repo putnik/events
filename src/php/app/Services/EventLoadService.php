@@ -23,7 +23,7 @@ class EventLoadService {
 		$url = preg_replace( '/^:?d:/', 'https://www.wikidata.org/wiki/', $url );
 		$url = preg_replace( '/^:([a-z\-]+):/', 'https://\1.wikipedia.org/wiki/', $url );
 		if ( strpos( $url, '://' ) === false ) {
-			$url = 'https://meta.wikimedia.org/wiki' . $url;
+			$url = 'https://meta.wikimedia.org/wiki/' . $url;
 		}
 		return $url;
 	}

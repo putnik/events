@@ -1,22 +1,38 @@
 <template>
-	<b-jumbotron v-if="title">
-		<h4>{{ title }}</h4>
-		<p v-if="categories.length" style="margin-top: 1em">
-			<b-badge variant="light" v-for="category in categories" :key="category">
-				{{ category }}
+	<b-modal size="lg" v-bind:id="id" v-bind:title="name">
+		<div v-if="categories.length" style="float: right">
+			<b-badge
+				v-for="category in categories"
+				v-bind:key="category[0]"
+				variant="light"
+				style="margin-left: 1em"
+			>
+				{{ category[0] }}
 			</b-badge>
+		</div>
+		<p>
+			<b-icon icon="calendar3"></b-icon>
+			{{ start.toLocaleString() }}
+			<span v-if="end && end !== start">— {{ end.toLocaleString() }}</span>
 		</p>
-		<p v-if="location" style="margin-top: 1em">{{ location }}</p>
-		<b-button-group>
-			<b-button v-if="url" variant="primary" :href="url">Open</b-button>
-			<b-button v-if="callUrl" variant="success" :href="callUrl">
-				<b-icon icon="camera-video"></b-icon>
-				Call
-			</b-button>
-		</b-button-group>
+		<p v-if="location" style="margin-top: 1em">
+			<b-icon icon="geo-alt"></b-icon>
+			{{ location }}
+		</p>
 		<p v-if="description" style="white-space: pre-wrap; margin-top: 1em">{{ description }}</p>
-		<p v-if="attendees.length" style="margin-top: 1em">{{ attendees.join(", ") }}</p>
-	</b-jumbotron>
+		<p v-if="attendees.length" style="margin-top: 1em">
+			{{ attendees.join(", ") }}
+		</p>
+
+		<template #modal-footer="{ open, cancel }">
+			<b-button size="sm" variant="outline-primary" v-bind:href="url">
+				Event page
+			</b-button>
+			<b-button size="sm" variant="outline-secondary" @click="cancel()">
+				Close
+			</b-button>
+		</template>
+	</b-modal>
 </template>
 
 <script lang="ts">
@@ -24,7 +40,10 @@ import Vue from "vue";
 
 export default Vue.extend({
 	props: {
-		title: { default: "" },
+		id: { required: true },
+		name: { required: true },
+		start: { required: true },
+		end: { required: true },
 		url: { default: "" },
 		callUrl: { default: "" },
 		description: { default: "" },

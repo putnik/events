@@ -1,27 +1,21 @@
 <template>
-	<div>
+	<div style="height:100vh">
 		<Navbar />
-		<b-container fluid>
-			<b-row>
-				<b-col cols="0">
-					<Sidebar />
-				</b-col>
-				<b-col cols="7">
-					<Calendar v-on:event-click="eventClick" />
-				</b-col>
-				<b-col cols="5">
-					<EventInfo
-						:name="event.name"
-						:url="event.url"
-						:callUrl="event.callUrl"
-						:description="event.description"
-						:location="event.location"
-						:categories="event.categories"
-						:attendees="event.attendees"
-					/>
-				</b-col>
-			</b-row>
+		<b-container fluid style="height:85vh">
+			<Calendar v-on:event-click="eventClick" />
 		</b-container>
+		<EventInfo
+			id="modal-event-info"
+			v-bind:name="event.name"
+			v-bind:start="event.start"
+			v-bind:end="event.end"
+			v-bind:url="event.url"
+			v-bind:callUrl="event.callUrl"
+			v-bind:description="event.description"
+			v-bind:location="event.location"
+			v-bind:categories="event.categories"
+			v-bind:attendees="event.attendees"
+		/>
 	</div>
 </template>
 
@@ -34,17 +28,18 @@ import Navbar from "./components/Navbar.vue";
 import Sidebar from "./components/Sidebar.vue";
 import { EventData } from "@/types";
 
+Vue.component("Calendar", Calendar);
+Vue.component("EventInfo", EventInfo);
+Vue.component("Navbar", Navbar);
+Vue.component("Sidebar", Sidebar);
+
 const App = Vue.extend({
 	name: "App",
-	components: {
-		Calendar,
-		EventInfo,
-		Navbar,
-		Sidebar
-	},
 	data: () => ({
 		event: {
 			name: "",
+			start: new Date(),
+			end: new Date(),
 			url: "",
 			callUrl: "",
 			description: "",
@@ -55,7 +50,10 @@ const App = Vue.extend({
 	}),
 	methods: {
 		eventClick: function(eventData: EventData) {
+			console.log("eventData", eventData);
 			this.event = eventData;
+			console.log("this.event", this.event);
+			this.$bvModal.show("modal-event-info");
 		}
 	}
 });

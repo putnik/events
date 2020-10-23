@@ -1,5 +1,5 @@
 <template>
-	<FullCalendar :options="calendarOptions" />
+	<FullCalendar :options="calendarOptions" style="height:85vh" />
 </template>
 
 <script lang="ts">
@@ -33,9 +33,9 @@ export default Vue.extend({
 				initialDate: "2020-10-21",
 				navLinks: true,
 				headerToolbar: {
-					left: "prev next today",
+					left: "prev,next",
 					center: "title",
-					right: "listMonth dayGridMonth timeGridWeek"
+					right: "listMonth,dayGridMonth"
 				},
 				eventTimeFormat: {
 					hour: "numeric",
@@ -47,6 +47,8 @@ export default Vue.extend({
 					info.jsEvent.preventDefault();
 					const eventData: EventData = {
 						name: String(info.event.title),
+						start: info.event.start,
+						end: info.event.end,
 						url: String(info.event.url),
 						description: String(info.event.extendedProps.description || ""),
 						location: String(info.event.extendedProps.location || ""),
