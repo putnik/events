@@ -1,6 +1,9 @@
 <template>
 	<b-navbar toggleable="md">
-		<b-navbar-brand href="#">Wikimedia Events Calendar</b-navbar-brand>
+		<b-navbar-brand href="#">
+			Wikimedia Events Calendar
+			<b-badge variant="light">beta</b-badge>
+		</b-navbar-brand>
 
 		<b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 

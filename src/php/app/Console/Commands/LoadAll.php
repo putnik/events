@@ -5,20 +5,25 @@ namespace App\Console\Commands;
 use App\Services\EventLoadService;
 use Illuminate\Console\Command;
 
-final class LoadMeta extends Command {
+final class LoadAll extends Command {
+	private const HCALENDAR_SOURCES = [
+		'https://en.wikipedia.org/wiki/Wikipedia:Meetup/Calendar',
+		'https://ru.wikipedia.org/wiki/Википедия:Вики-встречи/Архив',
+	];
+
 	/**
 	 * The name and signature of the console command.
 	 *
 	 * @var string
 	 */
-	protected $signature = 'load:meta';
+	protected $signature = 'load:all';
 
 	/**
 	 * The console command description.
 	 *
 	 * @var string
 	 */
-	protected $description = 'Load data from [[meta:Events calendar]]';
+	protected $description = 'Load data from all available sources';
 
 	/** @var EventLoadService */
 	private $eventLoadService;
@@ -41,6 +46,10 @@ final class LoadMeta extends Command {
 	 * @throws \Exception
 	 */
 	public function handle(): void {
+		$this->eventLoadService->clearDir();
 		$this->eventLoadService->loadMeta( EventLoadService::META_URL );
+		foreach ( self::HCALENDAR_SOURCES as $url ) {
+			$this->eventLoadService->loadHCalendar( $url );
+		}
 	}
 }

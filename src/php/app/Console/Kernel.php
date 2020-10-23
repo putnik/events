@@ -2,34 +2,31 @@
 
 namespace App\Console;
 
+use App\Console\Commands\LoadAll;
 use App\Console\Commands\LoadHCalendar;
 use App\Console\Commands\LoadMeta;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 
-class Kernel extends ConsoleKernel
-{
-    /**
-     * The Artisan commands provided by your application.
-     *
-     * @var array
-     */
-    protected $commands = [
-    	LoadHCalendar::class,
+class Kernel extends ConsoleKernel {
+	/**
+	 * The Artisan commands provided by your application.
+	 *
+	 * @var array
+	 */
+	protected $commands = [
+		LoadAll::class,
+		LoadHCalendar::class,
 		LoadMeta::class,
-    ];
+	];
 
-    /**
-     * Define the application's command schedule.
-     *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
-     * @return void
-     */
-    protected function schedule(Schedule $schedule): void
-    {
-		$schedule->command(LoadMeta::class)->daily();
-		$schedule->command(LoadHCalendar::class, [
-			'https://en.wikipedia.org/wiki/Wikipedia:Meetup/Calendar',
-		])->daily();
-    }
+	/**
+	 * Define the application's command schedule.
+	 *
+	 * @param Schedule $schedule
+	 * @return void
+	 */
+	protected function schedule( Schedule $schedule ): void {
+		$schedule->command( LoadAll::class )->daily();
+	}
 }

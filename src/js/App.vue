@@ -11,10 +11,13 @@
 				</b-col>
 				<b-col cols="5">
 					<EventInfo
-						:title="event.title"
+						:name="event.name"
 						:url="event.url"
 						:callUrl="event.callUrl"
-						:desc="event.desc"
+						:description="event.description"
+						:location="event.location"
+						:categories="event.categories"
+						:attendees="event.attendees"
 					/>
 				</b-col>
 			</b-row>
@@ -41,10 +44,13 @@ const App = Vue.extend({
 	},
 	data: () => ({
 		event: {
-			title: "",
+			name: "",
 			url: "",
 			callUrl: "",
-			desc: ""
+			description: "",
+			location: "",
+			categories: "".split(""),
+			attendees: "".split("")
 		}
 	}),
 	methods: {

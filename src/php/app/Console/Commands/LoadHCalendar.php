@@ -2,14 +2,10 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Event;
-use Carbon\Carbon;
+use App\Services\EventLoadService;
 use Illuminate\Console\Command;
-use function Mf2\fetch as mfFetch;
 
-final class LoadHCalendar extends Command
-{
-	private const DATA_DIR = __DIR__ . '/../../../../../data';
+final class LoadHCalendar extends Command {
 
 	/**
 	 * The name and signature of the console command.
@@ -25,72 +21,28 @@ final class LoadHCalendar extends Command
 	 */
 	protected $description = 'Load data from page with hCalendar microformat';
 
+	/** @var EventLoadService */
+	private $eventLoadService;
+
 	/**
 	 * Create a new command instance.
 	 *
-	 * @return void
+	 * @param EventLoadService $eventLoadService
 	 */
-	public function __construct()
-	{
+	public function __construct( EventLoadService $eventLoadService ) {
 		parent::__construct();
-	}
 
-	private function parseHEvent(array $mf): ?Event
-	{
-		if (!isset($mf['type'][0]) || $mf['type'][0] !== 'h-event') {
-			return null;
-		}
-		$data = $mf['properties'];
-		if (!isset($data['start'][0], $data['name'][0])) {
-			return null;
-		}
-
-		[$title, $url] = $this->parseHCard($data['name'][0]);
-		return new Event([
-			'start' => new Carbon($data['start'][0]),
-			'end' => isset($data['end'][0])
-				? new Carbon($data['end'][0])
-				: new Carbon($data['start'][0]),
-			'title' => $title,
-			'desc' => '',
-			'url' => $url,
-			'callUrl' => '',
-		]);
-	}
-
-
-	private function parseHCard($data): array
-	{
-		if (is_string($data)) {
-			return [
-				$data,
-				''
-			];
-		}
-		return [
-			mb_convert_encoding($data['properties']['name'][0], 'UTF-8', 'UTF-8'),
-			mb_convert_encoding($data['properties']['url'][0] ?? '', 'UTF-8', 'UTF-8')
-		];
+		$this->eventLoadService = $eventLoadService;
 	}
 
 	/**
 	 * Execute the console command.
 	 *
 	 * @return void
+	 * @throws \Exception
 	 */
-	public function handle(): void
-	{
-		$url = $this->argument('url');
-		$data = mfFetch($url);
-		$events = [];
-		foreach ($data['items'] as $mf) {
-			$event = $this->parseHEvent($mf);
-			if ($event !== null) {
-				$events[] = $event;
-			}
-		}
-		$filename = self::DATA_DIR . '/' . md5($url) . '.json';
-		$json = json_encode($events, JSON_UNESCAPED_UNICODE);
-		file_put_contents($filename, $json);
+	public function handle(): void {
+		$url = $this->argument( 'url' );
+		$this->eventLoadService->loadHCalendar( $url );
 	}
 }

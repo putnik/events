@@ -2,50 +2,47 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\EventService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
-class EventController extends Controller
-{
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
+class EventController extends Controller {
+	/** @var EventService */
+	private $eventService;
 
-    public function list(Request $request)
-    {
-        $start = new Carbon($request->input('start'));
-        $end = new Carbon($request->input('end'));
+	/**
+	 * EventController constructor.
+	 * @param EventService $eventService
+	 */
+	public function __construct( EventService $eventService ) {
+		$this->eventService = $eventService;
+	}
 
-        $dir = __DIR__ . '/../../../../../data';
-		$files = scandir($dir);
-		$events = [];
-		foreach ($files as $file) {
-			if (!preg_match('/\.json$/', $file)) {
-				continue;
-			}
-			$content = file_get_contents($dir . '/' . $file);
-			$fileEvents = json_decode($content, true);
-			if (json_last_error()) {
-				continue;
-			}
-			foreach ($fileEvents as $event) {
-				$eventStart = new Carbon($event['start']);
-				$eventEnd = new Carbon($event['end']);
-				if (
-					($start <= $eventStart && $eventStart <= $end) ||
-					($start <= $eventEnd && $eventEnd <= $end)
-				) {
-					$events[] = $event;
-				}
-			}
-		}
+	/**
+	 * @param Request $request
+	 * @return string
+	 * @throws \Exception
+	 */
+	public function json( Request $request ): string {
+		$start = new Carbon( $request->input( 'start' ) );
+		$end = new Carbon( $request->input( 'end' ) );
 
-        return json_encode($events);
-    }
+		$events = $this->eventService->getCollectionByDates( $start, $end )->toFullCalendarArray();
+
+		return json_encode( $events );
+	}
+
+	/**
+	 * @return string
+	 * @throws \Exception
+	 */
+	public function iCalendar(): string {
+		$start = new Carbon( '-3 month' );
+
+		$vCalendar = $this->eventService->getCollectionByDates( $start )->toICalendar();
+
+		header( 'Content-Type: text/calendar; charset=utf-8' );
+		header( 'Content-Disposition: attachment; filename="cal.ics"' );
+		return $vCalendar->render();
+	}
 }

@@ -17,4 +17,4 @@ $router->get( '/', function () use ( $router ) {
 	return $router->app->version();
 } );
 
-$router->get( '/events', 'EventController@json' );
+$router->get( '/calendar.ics', 'EventController@iCalendar' );

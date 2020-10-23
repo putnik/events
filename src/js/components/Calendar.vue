@@ -46,10 +46,13 @@ export default Vue.extend({
 				eventClick: (info: any) => {
 					info.jsEvent.preventDefault();
 					const eventData: EventData = {
-						title: String(info.event.title),
+						name: String(info.event.title),
 						url: String(info.event.url),
-						desc: String(info.event.extendedProps.desc || ""),
-						callUrl: String(info.event.extendedProps.callUrl || "")
+						description: String(info.event.extendedProps.description || ""),
+						location: String(info.event.extendedProps.location || ""),
+						categories: Array(info.event.extendedProps.categories || []),
+						attendees: Array(info.event.extendedProps.attendees || []),
+						callUrl: String(info.event.extendedProps.call_url || "")
 					};
 					this.$emit("event-click", eventData);
 				}

@@ -1,6 +1,9 @@
 export interface EventData {
-	title: string;
-	desc: string;
+	name: string;
+	description: string;
 	url: string;
 	callUrl: string;
+	location: string;
+	categories: string[];
+	attendees: string[];
 }
