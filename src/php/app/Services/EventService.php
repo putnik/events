@@ -16,7 +16,7 @@ class EventService {
 	public function getCollectionByDates( Carbon $start, ?Carbon $end = null ): EventCollection {
 		$dir = EventLoadService::DATA_DIR;
 		$files = scandir( $dir );
-		$events = [];
+		$events = new EventCollection();
 		foreach ( $files as $file ) {
 			if ( !preg_match( '/\.json$/', $file ) ) {
 				continue;
@@ -32,11 +32,11 @@ class EventService {
 				$eventEnd = new Carbon( $event['end'] );
 				if ( ( $start <= $eventStart && ( $eventStart <= $end || $end === null ) ) ||
 					( $start <= $eventEnd && ( $eventEnd <= $end || $end === null ) ) ) {
-					$events[] = $event;
+					$events->add( $event );
 				}
 			}
 		}
 
-		return new EventCollection( $events );
+		return $events;
 	}
 }

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Eluceo\iCal\Component\Event as ICalendarEvent;
-use Illuminate\Database\Eloquent\Model;
+use Jenssegers\Model\Model;
 
 class Event extends Model {
 	protected $fillable = [

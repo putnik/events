@@ -7,6 +7,7 @@
     "require": {
         "php": "^7.3",
         "eluceo/ical": "^0.16.1",
+        "jenssegers/model": "^1.4",
         "johngrogg/ics-parser": "^2.2",
         "laravel/lumen-framework": "^8.0",
         "masterminds/html5": "^2.7",
