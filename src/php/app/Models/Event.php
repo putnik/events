@@ -98,7 +98,7 @@ class Event extends Model {
 	public function toFullCalendarArray(): array {
 		$eventData = $this->attributesToArray();
 		$eventData['title'] = $eventData['name'];
-		unset( $eventData['title'] );
+		unset( $eventData['name'] );
 		return $eventData;
 	}
 
