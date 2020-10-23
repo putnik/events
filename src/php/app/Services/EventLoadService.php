@@ -66,6 +66,9 @@ class EventLoadService {
 		if ( $name === null ) {
 			return null;
 		}
+		if ( isset( $data['url'][0] ) ) {
+			$url = $this->prepareUrl( $data['url'][0] );
+		}
 
 		return new Event( [
 			'start' => new Carbon( $data['start'][0] ),
