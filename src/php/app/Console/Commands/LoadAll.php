@@ -46,6 +46,7 @@ final class LoadAll extends Command {
 	 * @throws \Exception
 	 */
 	public function handle(): void {
+		$this->info( 'Data dir: ' . realpath( EventLoadService::DATA_DIR ) );
 		$this->eventLoadService->clearDir();
 		$this->eventLoadService->loadMeta( EventLoadService::META_URL );
 		foreach ( self::HCALENDAR_SOURCES as $url ) {

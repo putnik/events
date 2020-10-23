@@ -19,7 +19,7 @@ class EventLoadService {
 	 * @return string
 	 */
 	private function prepareUrl( string $url ): string {
-		$url = str_replace( ' ', '_', $url );
+		$url = (string)str_replace( ' ', '_', $url );
 		$url = preg_replace( '/^:?d:/', 'https://www.wikidata.org/wiki/', $url );
 		$url = preg_replace( '/^:([a-z\-]+):/', 'https://\1.wikipedia.org/wiki/', $url );
 		if ( strpos( $url, '://' ) === false ) {

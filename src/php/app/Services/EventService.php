@@ -14,7 +14,7 @@ class EventService {
 	 * @throws \Exception
 	 */
 	public function getCollectionByDates( Carbon $start, ?Carbon $end = null ): EventCollection {
-		$dir = __DIR__ . '/../../../../data';
+		$dir = EventLoadService::DATA_DIR;
 		$files = scandir( $dir );
 		$events = [];
 		foreach ( $files as $file ) {
