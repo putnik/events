@@ -24,6 +24,7 @@ class EventCollection extends AbstractCollection {
 
 	/**
 	 * @return VCalendar
+	 * @throws \Exception
 	 */
 	public function toICalendar(): VCalendar {
 		$vCalendar = new VCalendar( 'events.toolforge.org' );

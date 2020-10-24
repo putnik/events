@@ -42,7 +42,7 @@ class EventController extends Controller {
 		$vCalendar = $this->eventService->getCollectionByDates( $start )->toICalendar();
 
 		header( 'Content-Type: text/calendar; charset=utf-8' );
-		header( 'Content-Disposition: attachment; filename="cal.ics"' );
+		header( 'Content-Disposition: attachment; filename="calendar.ics"' );
 		return $vCalendar->render();
 	}
 }
