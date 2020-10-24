@@ -31,16 +31,18 @@ class Event extends Model {
 
 	/**
 	 * @return Carbon
+	 * @throws \Exception
 	 */
 	public function getStart(): Carbon {
-		return $this->getAttribute( 'start' );
+		return new Carbon( $this->getAttribute( 'start' ) );
 	}
 
 	/**
 	 * @return Carbon
+	 * @throws \Exception
 	 */
 	public function getEnd(): Carbon {
-		return $this->getAttribute( 'end' );
+		return new Carbon( $this->getAttribute( 'end' ) );
 	}
 
 	/**
@@ -104,6 +106,7 @@ class Event extends Model {
 
 	/**
 	 * @return ICalendarEvent
+	 * @throws \Exception
 	 */
 	public function toICalendarEvent(): ICalendarEvent {
 		$vEvent = new ICalendarEvent();
