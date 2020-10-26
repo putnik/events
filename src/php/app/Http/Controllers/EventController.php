@@ -67,7 +67,7 @@ final class EventController extends Controller {
 			$vCalendar->setName( env( 'CALENDAR_NAME' ) );
 			$vCalendar->setCalendarColor( env( 'CALENDAR_COLOR' ) );
 
-			$ttl = CarbonInterval::seconds( (int)env( 'CALENDAR_TTL' )->cascade();
+			$ttl = CarbonInterval::seconds( (int)env( 'CALENDAR_TTL' ) )->cascade();
 			$vCalendar->setPublishedTTL( $ttl->spec() );
 
 			return $vCalendar;
