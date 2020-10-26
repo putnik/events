@@ -25,7 +25,7 @@ class EventLoadService {
 		if ( strpos( $url, '://' ) === false ) {
 			$url = 'https://meta.wikimedia.org/wiki/' . $url;
 		}
-		return $url;
+		return mb_convert_encoding( $url, 'UTF-8', 'UTF-8' );
 	}
 
 	/**
@@ -33,7 +33,7 @@ class EventLoadService {
 	 * @param EventCollection $events
 	 */
 	private function storeData( string $url, EventCollection $events ): void {
-		$json = json_encode( $events->toArray(), JSON_UNESCAPED_UNICODE );
+		$json = $events->toJson( JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR );
 		$filename = self::DATA_DIR . '/' . md5( $url ) . '.json';
 		file_put_contents( $filename, $json );
 	}
@@ -91,7 +91,7 @@ class EventLoadService {
 	private function parseHCard( $data ): array {
 		if ( is_string( $data ) ) {
 			return [
-				$data,
+				mb_convert_encoding( $data, 'UTF-8', 'UTF-8' ),
 				''
 			];
 		}
@@ -128,7 +128,7 @@ class EventLoadService {
 	 */
 	public function loadMeta( string $url ): void {
 		$content = file_get_contents( $url );
-		$metaEvents = json_decode( $content, true );
+		$metaEvents = json_decode( $content, true, 512, JSON_THROW_ON_ERROR );
 		$events = new EventCollection();
 		foreach ( $metaEvents as $metaEvent ) {
 			$event = new Event( [

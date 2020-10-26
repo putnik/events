@@ -20,6 +20,7 @@ export default Vue.extend({
 		return {
 			calendarOptions: {
 				locale: navigator.language || "en",
+				firstDay: 1,
 				events: "/api/events",
 				themeSystem: "bootstrap",
 				plugins: [

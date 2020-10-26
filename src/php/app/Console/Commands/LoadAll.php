@@ -48,8 +48,10 @@ final class LoadAll extends Command {
 	public function handle(): void {
 		$this->info( 'Data dir: ' . realpath( EventLoadService::DATA_DIR ) );
 		$this->eventLoadService->clearDir();
+		$this->info( 'Load [[meta:Events calendar]]' );
 		$this->eventLoadService->loadMeta( EventLoadService::META_URL );
 		foreach ( self::HCALENDAR_SOURCES as $url ) {
+			$this->info( 'Load ' . $url );
 			$this->eventLoadService->loadHCalendar( $url );
 		}
 	}
