@@ -9,7 +9,7 @@
     "lint": "vue-cli-service lint",
     "dist:upload": "scp -r dist/* login.toolforge.org:/data/project/events/public_html",
     "dist:git-pull": "ssh login.toolforge.org 'cd /data/project/events/tool-events && git pull'",
-    "dist": "npm run build && npm run dist:upload && npm run dist:git-pull"
+    "dist": "git push && npm run dist:git-pull && npm run build && npm run dist:upload"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.1",

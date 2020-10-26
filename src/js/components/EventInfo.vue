@@ -26,7 +26,7 @@
 
 		<template #modal-footer="{ open, cancel }">
 			<b-button size="sm" variant="outline-primary" v-bind:href="url">
-				<b-icon icon="info-circle"></b-icon>
+				<b-icon icon="box-arrow-up-right"></b-icon>
 				Event page
 			</b-button>
 			<b-button size="sm" variant="outline-primary" style="display:none">
