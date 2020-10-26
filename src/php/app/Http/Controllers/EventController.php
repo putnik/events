@@ -12,8 +12,6 @@ use Illuminate\Http\Request;
 use mysql_xdevapi\Exception;
 
 final class EventController extends Controller {
-	private const CALENDAR_TTL = 36000;
-
 	private const FORMAT_ICALENDAR = 'ics';
 	private const FORMAT_JSON = 'json';
 	private const FORMAT_XML = 'xml';
@@ -66,9 +64,10 @@ final class EventController extends Controller {
 			$events = $this->eventService->loadCollection();
 			$vCalendar = $events->toICalendar( $type );
 
-			$vCalendar->setName( 'Wikimedia' );
+			$vCalendar->setName( env( 'CALENDAR_NAME' ) );
+			$vCalendar->setCalendarColor( env( 'CALENDAR_COLOR' ) );
 
-			$ttl = CarbonInterval::seconds( self::CALENDAR_TTL )->cascade();
+			$ttl = CarbonInterval::seconds( (int)env( 'CALENDAR_TTL' )->cascade();
 			$vCalendar->setPublishedTTL( $ttl->spec() );
 
 			return $vCalendar;

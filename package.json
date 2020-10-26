@@ -7,7 +7,9 @@
     "serve:php": "php -S localhost:8000 -t public",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "dist": "scp -r dist/* login.toolforge.org:/data/project/events/public_html"
+    "dist:upload": "scp -r dist/* login.toolforge.org:/data/project/events/public_html",
+    "dist:git-pull": "ssh login.toolforge.org 'cd /data/project/events/tool-events && git pull'",
+    "dist": "npm run build && npm run dist:upload && npm run dist:git-pull"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.1",
