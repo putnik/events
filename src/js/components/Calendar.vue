@@ -52,8 +52,8 @@ export default Vue.extend({
 						url: String(info.event.url),
 						description: String(info.event.extendedProps.description || ""),
 						location: String(info.event.extendedProps.location || ""),
-						categories: Array(info.event.extendedProps.categories || []),
-						attendees: Array(info.event.extendedProps.attendees || []),
+						categories: info.event.extendedProps.categories || [],
+						attendees: info.event.extendedProps.attendees || [],
 						callUrl: String(info.event.extendedProps.call_url || "")
 					};
 					this.$emit("event-click", eventData);

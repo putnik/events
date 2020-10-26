@@ -13,5 +13,8 @@ module.exports = {
 				"@": path.resolve(__dirname, "src/js")
 			}
 		}
+	},
+	devServer: {
+		proxy: "http://localhost:8000"
 	}
 };

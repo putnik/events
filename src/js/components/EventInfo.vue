@@ -3,11 +3,11 @@
 		<div v-if="categories.length" style="float: right">
 			<b-badge
 				v-for="category in categories"
-				v-bind:key="category[0]"
+				v-bind:key="category"
 				variant="light"
-				style="margin-left: 1em"
+				style="margin-left: .5em"
 			>
-				{{ category[0] }}
+				{{ category }}
 			</b-badge>
 		</div>
 		<p>
@@ -26,7 +26,12 @@
 
 		<template #modal-footer="{ open, cancel }">
 			<b-button size="sm" variant="outline-primary" v-bind:href="url">
+				<b-icon icon="info-circle"></b-icon>
 				Event page
+			</b-button>
+			<b-button size="sm" variant="outline-primary" style="display:none">
+				<b-icon icon="calendar2-plus"></b-icon>
+				Add to calendar
 			</b-button>
 			<b-button size="sm" variant="outline-secondary" @click="cancel()">
 				Close

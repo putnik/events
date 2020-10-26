@@ -4,16 +4,12 @@ namespace App\Services;
 
 use App\Models\Event;
 use App\Models\EventCollection;
-use Carbon\Carbon;
 
 class EventService {
 	/**
-	 * @param Carbon $start
-	 * @param Carbon|null $end
 	 * @return EventCollection
-	 * @throws \Exception
 	 */
-	public function getCollectionByDates( Carbon $start, ?Carbon $end = null ): EventCollection {
+	public function loadCollection(): EventCollection {
 		$dir = EventLoadService::DATA_DIR;
 		$files = scandir( $dir );
 		$events = new EventCollection();
@@ -22,21 +18,15 @@ class EventService {
 				continue;
 			}
 			$content = file_get_contents( $dir . '/' . $file );
-			$fileEvents = json_decode( $content, true );
+			$fileEvents = json_decode( $content, true, 512, JSON_THROW_ON_ERROR );
 			if ( json_last_error() ) {
 				continue;
 			}
 			foreach ( $fileEvents as $eventData ) {
 				$event = new Event( $eventData );
-				$eventStart = new Carbon( $event['start'] );
-				$eventEnd = new Carbon( $event['end'] );
-				if ( ( $start <= $eventStart && ( $eventStart <= $end || $end === null ) ) ||
-					( $start <= $eventEnd && ( $eventEnd <= $end || $end === null ) ) ) {
-					$events->add( $event );
-				}
+				$events->add( $event );
 			}
 		}
-
 		return $events;
 	}
 }

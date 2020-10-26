@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
+    "serve:php": "php -S localhost:8000 -t public",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "dist": "scp -r dist/* login.toolforge.org:/data/project/events/public_html"

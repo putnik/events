@@ -9,6 +9,11 @@
 
 		<b-collapse id="nav-collapse" is-nav>
 			<b-navbar-nav class="ml-auto">
+				<b-nav-item-dropdown text="Subscribe" right>
+					<b-dropdown-item href="/export/google.ics">Google</b-dropdown-item>
+					<b-dropdown-item href="/export/other.ics">Other</b-dropdown-item>
+				</b-nav-item-dropdown>
+
 				<b-nav-item-dropdown text="Lang" right>
 					<b-dropdown-item href="#">EN</b-dropdown-item>
 					<b-dropdown-item href="#">ES</b-dropdown-item>

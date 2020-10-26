@@ -44,8 +44,8 @@ const App = Vue.extend({
 			callUrl: "",
 			description: "",
 			location: "",
-			categories: "".split(""),
-			attendees: "".split("")
+			categories: [] as string[],
+			attendees: [] as string[]
 		}
 	}),
 	methods: {

@@ -17,4 +17,5 @@ $router->get( '/', function () use ( $router ) {
 	return $router->app->version();
 } );
 
-$router->get( '/calendar.ics', 'EventController@iCalendar' );
+$router->get( '/{typeName:(?:google|other)}', 'EventController@iCalendar' );
+$router->get( '/{typeName:(?:google|other)}.{format:ics}', 'EventController@iCalendar' );

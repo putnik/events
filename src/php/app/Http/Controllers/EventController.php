@@ -2,19 +2,35 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CalendarType;
 use App\Services\EventService;
 use Carbon\Carbon;
+use Carbon\CarbonInterval;
+use Eluceo\iCal\Component\Calendar as VCalendar;
+use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Http\Request;
+use mysql_xdevapi\Exception;
 
-class EventController extends Controller {
+final class EventController extends Controller {
+	private const CALENDAR_TTL = 36000;
+
+	private const FORMAT_ICALENDAR = 'ics';
+	private const FORMAT_JSON = 'json';
+	private const FORMAT_XML = 'xml';
+
+	/** @var Cache */
+	private $cache;
+
 	/** @var EventService */
 	private $eventService;
 
 	/**
 	 * EventController constructor.
+	 * @param Cache $cache
 	 * @param EventService $eventService
 	 */
-	public function __construct( EventService $eventService ) {
+	public function __construct( Cache $cache, EventService $eventService ) {
+		$this->cache = $cache;
 		$this->eventService = $eventService;
 	}
 
@@ -23,26 +39,52 @@ class EventController extends Controller {
 	 * @return string
 	 * @throws \Exception
 	 */
-	public function json( Request $request ): string {
+	public function fullCalendar( Request $request ): string {
 		$start = new Carbon( $request->input( 'start' ) );
 		$end = new Carbon( $request->input( 'end' ) );
 
-		$events = $this->eventService->getCollectionByDates( $start, $end )->toFullCalendarArray();
+		$events =
+			$this->eventService->loadCollection()
+				->filterAfter( $start )
+				->filterBefore( $end )
+				->toFullCalendarArray();
 
-		return json_encode( $events );
+		return json_encode( $events, JSON_THROW_ON_ERROR );
 	}
 
 	/**
+	 * @param string $typeName
+	 * @param string $format
 	 * @return string
-	 * @throws \Exception
+	 * @throws \Psr\SimpleCache\InvalidArgumentException
 	 */
-	public function iCalendar(): string {
-		$start = new Carbon( '-3 month' );
+	public function iCalendar( string $typeName, $format = self::FORMAT_ICALENDAR ): string {
+		$type = new CalendarType( $typeName );
 
-		$vCalendar = $this->eventService->getCollectionByDates( $start )->toICalendar();
+		/** @var VCalendar $vCalendar */
+		$vCalendar = $this->cache->get( 'calendar:' . $typeName, function () use ( $type ) {
+			$events = $this->eventService->loadCollection();
+			$vCalendar = $events->toICalendar( $type );
 
-		header( 'Content-Type: text/calendar; charset=utf-8' );
-		header( 'Content-Disposition: attachment; filename="calendar.ics"' );
-		return $vCalendar->render();
+			$vCalendar->setName( 'Wikimedia' );
+
+			$ttl = CarbonInterval::seconds( self::CALENDAR_TTL )->cascade();
+			$vCalendar->setPublishedTTL( $ttl->spec() );
+
+			return $vCalendar;
+		} );
+
+		switch ( $format ) {
+			case self::FORMAT_ICALENDAR:
+				header( 'Content-Type: text/calendar; charset=utf-8' );
+				header( 'Content-Disposition: attachment; filename="' . $typeName . '.ics"' );
+				return $vCalendar->render();
+			case self::FORMAT_JSON:
+				// TODO
+			case self::FORMAT_XML:
+				// TODO
+			default:
+				throw new Exception( 'Invalid format' );
+		}
 	}
 }

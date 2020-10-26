@@ -105,18 +105,33 @@ class Event extends Model {
 	}
 
 	/**
+	 * @param CalendarType $type
 	 * @return ICalendarEvent
 	 * @throws \Exception
 	 */
-	public function toICalendarEvent(): ICalendarEvent {
+	public function toICalendarEvent( CalendarType $type ): ICalendarEvent {
 		$vEvent = new ICalendarEvent();
-		$vEvent
-			->setDtStart( $this->getStart() )
+		$vEvent->setDtStart( $this->getStart() )
 			->setDtEnd( $this->getEnd() )
 			->setSummary( $this->getName() )
-			->setUrl( $this->getUrl() ?: $this->getCallUrl() )
+			->setUrl( $this->getUrl() )
 			->setLocation( $this->getLocation() )
 			->setCategories( $this->getCategories() );
+
+		$description = $this->getDescription();
+		if ( $type->isSupportUrl() ) {
+			$vEvent->setUrl( $this->getUrl() );
+		} else {
+			$description .= sprintf( "\nURL: %s", $this->getUrl() );
+		}
+
+		if ( $this->getCallUrl() ) {
+			$description .= sprintf( "\nCall: %s", $this->getCallUrl() );
+		}
+
+		$description = trim( $description );
+
+		$vEvent->setDescription( $description );
 		return $vEvent;
 	}
 }
