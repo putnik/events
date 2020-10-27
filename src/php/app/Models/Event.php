@@ -122,11 +122,11 @@ class Event extends Model {
 		if ( $type->isSupportUrl() ) {
 			$vEvent->setUrl( $this->getUrl() );
 		} else {
-			$description .= sprintf( "\nURL: %s", $this->getUrl() );
+			$description .= sprintf( "\n%s", $this->getUrl() );
 		}
 
 		if ( $this->getCallUrl() ) {
-			$description .= sprintf( "\nCall: %s", $this->getCallUrl() );
+			$description .= sprintf( "\n%s", $this->getCallUrl() );
 		}
 
 		$description = trim( $description );
