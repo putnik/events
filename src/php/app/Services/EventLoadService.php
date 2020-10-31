@@ -5,14 +5,20 @@ namespace App\Services;
 use App\Models\Event;
 use App\Models\EventCollection;
 use Carbon\Carbon;
+use ICal\ICal;
 use function Mf2\fetch as mfFetch;
 
 class EventLoadService {
-	public const META_URL = 'https://meta.wikimedia.org/wiki/Events_calendar/events.json?action=raw';
+	public const PARSER_META = 'meta';
+	public const PARSER_HCALENDAR = 'hcalendar';
+	public const PARSER_ICS = 'ics';
+
 	public const DATA_DIR = __DIR__ . '/../../../../data';
 
 	public const H_CARD = 'h-card';
 	public const H_EVENT = 'h-event';
+
+	public const ONLINE_LOCATION = 'Online';
 
 	/**
 	 * @param string $url
@@ -117,6 +123,38 @@ class EventLoadService {
 			if ( $event !== null ) {
 				$events->add( $event );
 			}
+		}
+
+		$this->storeData( $url, $events );
+	}
+
+	/**
+	 * @param string $url
+	 * @throws \Exception
+	 */
+	public function loadIcs( string $url ): void {
+		$iCal = new ICal( $url );
+		$events = new EventCollection();
+		foreach ( $iCal->events() as $iCalEvent ) {
+			/** @var \ICal\Event $iCalEvent */
+			$location = $iCalEvent->location;
+			$callUrl = '';
+			if ( filter_var($location, FILTER_VALIDATE_URL ) ) {
+				$callUrl = $location;
+				$location = self::ONLINE_LOCATION;
+			}
+			$event = new Event( [
+				'start' => new Carbon( $iCalEvent->dtstart ),
+				'end' => new Carbon( $iCalEvent->dtend ),
+				'name' => $iCalEvent->summary,
+				'description' => $iCalEvent->description,
+				'location' => $location,
+				'categories' => [],
+				'attendees' => [],
+				'url' => $callUrl,
+				'call_url' => '',
+			] );
+			$events->add( $event );
 		}
 
 		$this->storeData( $url, $events );

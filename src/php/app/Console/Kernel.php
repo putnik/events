@@ -4,7 +4,6 @@ namespace App\Console;
 
 use App\Console\Commands\LoadAll;
 use App\Console\Commands\LoadHCalendar;
-use App\Console\Commands\LoadMeta;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 
@@ -17,7 +16,6 @@ class Kernel extends ConsoleKernel {
 	protected $commands = [
 		LoadAll::class,
 		LoadHCalendar::class,
-		LoadMeta::class,
 	];
 
 	/**
