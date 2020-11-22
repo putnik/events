@@ -51,23 +51,8 @@ final class LoadAll extends Command {
 		$this->eventLoadService->clearDir();
 		$sources = $this->iniService->loadSources();
 		foreach ( $sources->all() as $source ) {
-			$url = $source->getUrl();
-			switch ($source->getParser()) {
-				case EventLoadService::PARSER_META:
-					$this->info( 'Load [[meta:Events calendar]]' );
-					$this->eventLoadService->loadMeta( $url );
-					break;
-				case EventLoadService::PARSER_HCALENDAR:
-					$this->info( 'Load hCalendar: ' . $url );
-					$this->eventLoadService->loadHCalendar( $url );
-					break;
-				case EventLoadService::PARSER_ICS;
-					$this->info( 'Load ICS: ' . $url );
-					$this->eventLoadService->loadIcs( $url );
-					break;
-				default:
-					$this->warn( 'Unsupported parser: ' . $source->getParser() );
-			}
+			$this->info( 'Load ' . $source->getParser() . ': ' . $source->getUrl() );
+			$this->eventLoadService->load( $source );
 		}
 	}
 }

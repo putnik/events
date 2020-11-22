@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Eluceo\iCal\Component\Event as ICalendarEvent;
 use Jenssegers\Model\Model;
 
-class Event extends Model {
+final class Event extends Model {
 	protected $fillable = [
 		'start',
 		'end',
@@ -85,6 +85,17 @@ class Event extends Model {
 	 */
 	public function getCategories(): array {
 		return $this->getAttribute( 'categories' );
+	}
+
+	/**
+	 * @param array $categories
+	 */
+	public function addCategories( array $categories ): void {
+		$newCategories = array_unique( array_merge(
+			$this->getAttribute( 'categories' ),
+			$categories
+		) );
+		$this->setAttribute( 'categories', array_values( $newCategories ) );
 	}
 
 	/**

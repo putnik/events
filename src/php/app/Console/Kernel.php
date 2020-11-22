@@ -7,7 +7,7 @@ use App\Console\Commands\LoadHCalendar;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 
-class Kernel extends ConsoleKernel {
+final class Kernel extends ConsoleKernel {
 	/**
 	 * The Artisan commands provided by your application.
 	 *
@@ -25,6 +25,5 @@ class Kernel extends ConsoleKernel {
 	 * @return void
 	 */
 	protected function schedule( Schedule $schedule ): void {
-		$schedule->command( LoadAll::class )->daily();
 	}
 }

@@ -8,7 +8,7 @@ use Eluceo\iCal\Component\Calendar as VCalendar;
 /**
  * @method Event[] all
  */
-class EventCollection extends AbstractCollection {
+final class EventCollection extends AbstractCollection {
 	public const MODEL = Event::class;
 
 	/**
@@ -55,5 +55,14 @@ class EventCollection extends AbstractCollection {
 		return $this->filter( function ( Event $event ) use ( $before ) {
 			return $event->getStart()->isBefore( $before ) || $event->getEnd()->isBefore( $before );
 		} );
+	}
+
+	/**
+	 * @param array $categories
+	 */
+	public function addCategories( array $categories ): void {
+		foreach ( $this->all() as $event ) {
+			$event->addCategories( $categories );
+		}
 	}
 }

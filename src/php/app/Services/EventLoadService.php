@@ -4,11 +4,12 @@ namespace App\Services;
 
 use App\Models\Event;
 use App\Models\EventCollection;
+use App\Models\Source;
 use Carbon\Carbon;
 use ICal\ICal;
 use function Mf2\fetch as mfFetch;
 
-class EventLoadService {
+final class EventLoadService {
 	public const PARSER_META = 'meta';
 	public const PARSER_HCALENDAR = 'hcalendar';
 	public const PARSER_ICS = 'ics';
@@ -112,9 +113,10 @@ class EventLoadService {
 
 	/**
 	 * @param string $url
+	 * @return EventCollection
 	 * @throws \Exception
 	 */
-	public function loadHCalendar( string $url ): void {
+	private function loadHCalendar( string $url ): EventCollection {
 		$data = mfFetch( $url );
 
 		$events = new EventCollection();
@@ -125,15 +127,17 @@ class EventLoadService {
 			}
 		}
 
-		$this->storeData( $url, $events );
+		return $events;
 	}
 
 	/**
 	 * @param string $url
+	 * @return EventCollection
 	 * @throws \Exception
 	 */
-	public function loadIcs( string $url ): void {
+	private function loadIcs( string $url ): EventCollection {
 		$iCal = new ICal( $url );
+
 		$events = new EventCollection();
 		foreach ( $iCal->events() as $iCalEvent ) {
 			/** @var \ICal\Event $iCalEvent */
@@ -157,16 +161,18 @@ class EventLoadService {
 			$events->add( $event );
 		}
 
-		$this->storeData( $url, $events );
+		return $events;
 	}
 
 	/**
 	 * @param string $url
+	 * @return EventCollection
 	 * @throws \Exception
 	 */
-	public function loadMeta( string $url ): void {
+	private function loadMeta( string $url ): EventCollection {
 		$content = file_get_contents( $url );
 		$metaEvents = json_decode( $content, true, 512, JSON_THROW_ON_ERROR );
+
 		$events = new EventCollection();
 		foreach ( $metaEvents as $metaEvent ) {
 			$event = new Event( [
@@ -182,6 +188,30 @@ class EventLoadService {
 			] );
 			$events->add( $event );
 		}
+
+		return $events;
+	}
+
+	/**
+	 * @param Source $source
+	 * @throws \Exception
+	 */
+	public function load( Source $source ): void {
+		$url = $source->getUrl();
+		switch ($source->getParser()) {
+			case self::PARSER_META:
+				$events = $this->loadMeta( $url );
+				break;
+			case self::PARSER_HCALENDAR:
+				$events = $this->loadHCalendar( $url );
+				break;
+			case self::PARSER_ICS;
+				$events = $this->loadIcs( $url );
+				break;
+			default:
+				throw new \Exception( 'Unknown parser' );
+		}
+		$events->addCategories( $source->getCategories() );
 		$this->storeData( $url, $events );
 	}
 }
