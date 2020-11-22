@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Source;
 use App\Models\SourceCollection;
 
-class IniService {
+final class IniService {
 	/**
 	 * @return SourceCollection
 	 */

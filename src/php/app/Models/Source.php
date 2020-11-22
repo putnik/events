@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Jenssegers\Model\Model;
 
-class Source extends Model {
+final class Source extends Model {
 	protected $fillable = [
 		'parser',
 		'url',

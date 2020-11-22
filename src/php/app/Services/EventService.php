@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Event;
 use App\Models\EventCollection;
 
-class EventService {
+final class EventService {
 	/**
 	 * @return EventCollection
 	 */
