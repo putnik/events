@@ -83,11 +83,12 @@ final class EventLoadService {
 				: new Carbon( $data['start'][0] ),
 			'name' => $name,
 			'description' => $data['summary'][0] ?? $data['description'][0] ?? '',
+			'url' => $url,
+			'call_url' => '',
 			'location' => $data['location'][0] ?? '',
 			'categories' => $data['category'] ?? [],
 			'attendees' => [],
-			'url' => $url,
-			'call_url' => '',
+			'rrule' => [],
 		] );
 	}
 
@@ -152,11 +153,12 @@ final class EventLoadService {
 				'end' => new Carbon( $iCalEvent->dtend ),
 				'name' => $iCalEvent->summary,
 				'description' => $iCalEvent->description,
+				'url' => $callUrl,
+				'call_url' => '',
 				'location' => $location,
 				'categories' => [],
 				'attendees' => [],
-				'url' => $callUrl,
-				'call_url' => '',
+				'rrule' => [],
 			] );
 			$events->add( $event );
 		}
@@ -185,6 +187,7 @@ final class EventLoadService {
 				'location' => implode( ', ', $metaEvent['location'] ),
 				'categories' => $metaEvent['tags'] ?? [],
 				'attendees' => [],
+				'rrule' => $metaEvent['rrule'] ?? [],
 			] );
 			$events->add( $event );
 		}

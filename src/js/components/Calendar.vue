@@ -31,7 +31,6 @@ export default Vue.extend({
 					timeGridPlugin
 				],
 				initialView: "listMonth",
-				initialDate: "2020-10-21",
 				navLinks: true,
 				headerToolbar: {
 					left: "prev,next",

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Eluceo\iCal\Component\Event as ICalendarEvent;
+use Eluceo\iCal\Property\Event\RecurrenceRule;
 use Jenssegers\Model\Model;
 
 final class Event extends Model {
@@ -17,6 +18,7 @@ final class Event extends Model {
 		'location',
 		'categories',
 		'attendees',
+		'rrule',
 	];
 
 	protected $casts = [
@@ -27,6 +29,7 @@ final class Event extends Model {
 		'url' => 'string',
 		'call_url' => 'string',
 		'location' => 'string',
+		'rrule' => 'array',
 	];
 
 	/**
@@ -106,6 +109,31 @@ final class Event extends Model {
 	}
 
 	/**
+	 * @return RecurrenceRule|null
+	 * @throws \Exception
+	 */
+	public function getRecurrenceRule(): ?RecurrenceRule {
+		$ruleData = $this->getAttribute( 'rrule' );
+		if ( !$ruleData ) {
+			return null;
+		}
+
+		$rrule = new RecurrenceRule();
+		if ( $ruleData['freq'] ) {
+			$rrule->setFreq( strtoupper( $ruleData['freq'] ) );
+		}
+		if ( $ruleData['interval'] ) {
+			$rrule->setInterval( (int)$ruleData['interval'] );
+		}
+		if ( $ruleData['until'] ) {
+			$until = Carbon::createFromTimestamp( (int)$ruleData['until'] );
+			$rrule->setUntil( $until );
+		}
+
+		return $rrule;
+	}
+
+	/**
 	 * @return array
 	 */
 	public function toFullCalendarArray(): array {
@@ -135,14 +163,17 @@ final class Event extends Model {
 		} else {
 			$description .= sprintf( "\n%s", $this->getUrl() );
 		}
-
 		if ( $this->getCallUrl() ) {
 			$description .= sprintf( "\n%s", $this->getCallUrl() );
 		}
-
 		$description = trim( $description );
-
 		$vEvent->setDescription( $description );
+
+		$rrule = $this->getRecurrenceRule();
+		if ( $rrule !== null ) {
+			$vEvent->addRecurrenceRule( $rrule );
+		}
+
 		return $vEvent;
 	}
 }
