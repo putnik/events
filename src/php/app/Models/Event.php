@@ -119,13 +119,13 @@ final class Event extends Model {
 		}
 
 		$rrule = new RecurrenceRule();
-		if ( $ruleData['freq'] ) {
+		if ( !empty( $ruleData['freq'] ) ) {
 			$rrule->setFreq( strtoupper( $ruleData['freq'] ) );
 		}
-		if ( $ruleData['interval'] ) {
+		if ( !empty( $ruleData['interval'] ) ) {
 			$rrule->setInterval( (int)$ruleData['interval'] );
 		}
-		if ( $ruleData['until'] ) {
+		if ( !empty( $ruleData['until'] ) ) {
 			$until = Carbon::createFromTimestamp( (int)$ruleData['until'] );
 			$rrule->setUntil( $until );
 		}

@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\CalendarExport;
 use App\Console\Commands\LoadAll;
 use App\Console\Commands\LoadHCalendar;
 use Illuminate\Console\Scheduling\Schedule;
@@ -14,6 +15,7 @@ final class Kernel extends ConsoleKernel {
 	 * @var array
 	 */
 	protected $commands = [
+		CalendarExport::class,
 		LoadAll::class,
 		LoadHCalendar::class,
 	];

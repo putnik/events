@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CalendarType;
+use App\Services\CalendarService;
 use App\Services\EventService;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
@@ -19,6 +20,9 @@ final class EventController extends Controller {
 	/** @var Cache */
 	private $cache;
 
+	/** @var CalendarService */
+	private $calendarService;
+
 	/** @var EventService */
 	private $eventService;
 
@@ -27,8 +31,13 @@ final class EventController extends Controller {
 	 * @param Cache $cache
 	 * @param EventService $eventService
 	 */
-	public function __construct( Cache $cache, EventService $eventService ) {
+	public function __construct(
+		Cache $cache,
+		CalendarService $calendarService,
+		EventService $eventService
+	) {
 		$this->cache = $cache;
+		$this->calendarService = $calendarService;
 		$this->eventService = $eventService;
 	}
 
@@ -62,15 +71,7 @@ final class EventController extends Controller {
 		/** @var VCalendar $vCalendar */
 		$vCalendar = $this->cache->get( 'calendar:' . $typeName, function () use ( $type ) {
 			$events = $this->eventService->loadCollection();
-			$vCalendar = $events->toICalendar( $type );
-
-			$vCalendar->setName( env( 'CALENDAR_NAME' ) );
-			$vCalendar->setCalendarColor( env( 'CALENDAR_COLOR' ) );
-
-			$ttl = CarbonInterval::seconds( (int)env( 'CALENDAR_TTL' ) )->cascade();
-			$vCalendar->setPublishedTTL( $ttl->spec() );
-
-			return $vCalendar;
+			return $this->calendarService->makeICalendar( $events, $type );
 		} );
 
 		switch ( $format ) {
