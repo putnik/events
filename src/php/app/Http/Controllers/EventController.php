@@ -29,6 +29,7 @@ final class EventController extends Controller {
 	/**
 	 * EventController constructor.
 	 * @param Cache $cache
+	 * @param CalendarService $calendarService
 	 * @param EventService $eventService
 	 */
 	public function __construct(
@@ -50,11 +51,10 @@ final class EventController extends Controller {
 		$start = new Carbon( $request->input( 'start' ) );
 		$end = new Carbon( $request->input( 'end' ) );
 
-		$events =
-			$this->eventService->loadCollection()
-				->filterAfter( $start )
-				->filterBefore( $end )
-				->toFullCalendarArray();
+		$events = $this->eventService->loadCollection()
+			->filterAfter( $start )
+			->filterBefore( $end )
+			->toFullCalendarArray();
 
 		return json_encode( $events, JSON_THROW_ON_ERROR );
 	}
@@ -67,12 +67,17 @@ final class EventController extends Controller {
 	 */
 	public function iCalendar( string $typeName, $format = self::FORMAT_ICALENDAR ): string {
 		$type = new CalendarType( $typeName );
+		$ttl = CarbonInterval::seconds( (int)env( 'CALENDAR_TTL' ) )->cascade();
 
 		/** @var VCalendar $vCalendar */
-		$vCalendar = $this->cache->get( 'calendar:' . $typeName, function () use ( $type ) {
-			$events = $this->eventService->loadCollection();
-			return $this->calendarService->makeICalendar( $events, $type );
-		} );
+		$vCalendar = $this->cache->remember(
+			'calendar:' . $typeName,
+			$ttl->seconds,
+			function () use ( $type, $ttl ) {
+				$events = $this->eventService->loadCollection();
+				return $this->calendarService->makeICalendar( $events, $type, $ttl );
+			}
+		);
 
 		switch ( $format ) {
 			case self::FORMAT_ICALENDAR:
@@ -81,8 +86,14 @@ final class EventController extends Controller {
 				return $vCalendar->render();
 			case self::FORMAT_JSON:
 				// TODO
+				header( 'Content-Type: application/json; charset=utf-8' );
+				header( 'Content-Disposition: attachment; filename="' . $typeName . '.json"' );
+				break;
 			case self::FORMAT_XML:
 				// TODO
+				header( 'Content-Type: text/xml; charset=utf-8' );
+				header( 'Content-Disposition: attachment; filename="' . $typeName . '.xml"' );
+				break;
 			default:
 				throw new Exception( 'Invalid format' );
 		}

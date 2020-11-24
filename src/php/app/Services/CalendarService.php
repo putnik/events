@@ -11,12 +11,14 @@ final class CalendarService {
 	/**
 	 * @param EventCollection $events
 	 * @param CalendarType|null $type
+	 * @param CarbonInterval|null $ttl
 	 * @return VCalendar
 	 * @throws \Exception
 	 */
 	public function makeICalendar(
 		EventCollection $events,
-		?CalendarType $type = null
+		?CalendarType $type = null,
+		?CarbonInterval $ttl = null
 	): VCalendar {
 		if ( $type === null ) {
 			$type = new CalendarType( CalendarType::OTHER );
@@ -26,8 +28,9 @@ final class CalendarService {
 		$vCalendar->setName( env( 'CALENDAR_NAME' ) );
 		$vCalendar->setCalendarColor( env( 'CALENDAR_COLOR' ) );
 
-		$ttl = CarbonInterval::seconds( (int)env( 'CALENDAR_TTL' ) )->cascade();
-		$vCalendar->setPublishedTTL( $ttl->spec() );
+		if ( $ttl !== null ) {
+			$vCalendar->setPublishedTTL( $ttl->spec() );
+		}
 
 		return $vCalendar;
 	}
